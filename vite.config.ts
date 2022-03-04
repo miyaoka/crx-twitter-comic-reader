@@ -1,7 +1,7 @@
-// vite.config.ts
 import { resolve } from "path";
 import { defineConfig } from "vite";
-import { chromeExtension } from "vite-plugin-chrome-extension";
+import { crx } from "rollup-plugin-chrome-extension";
+import manifest from "./manifest.json";
 
 export default defineConfig({
   resolve: {
@@ -9,10 +9,5 @@ export default defineConfig({
       "@": resolve(__dirname, "src"),
     },
   },
-  build: {
-    rollupOptions: {
-      input: "src/manifest.json",
-    },
-  },
-  plugins: [chromeExtension()],
+  plugins: [crx({ manifest })],
 });

@@ -10,7 +10,7 @@
   "content_scripts": [
     {
       "matches": ["http://*.twitter.com/*", "https://*.twitter.com/*"],
-      "js": ["content-scripts/main.ts"]
+      "js": ["./src/content-scripts/main.ts"]
     }
   ]
 }
