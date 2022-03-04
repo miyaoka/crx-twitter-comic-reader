@@ -13,8 +13,22 @@ const tweetButtonSelector = "[data-testid=tweetButton]";
 //
 const photoPageRegex = new RegExp("^/[^/]+/status/\\d+/photo");
 
-const moveToNextPhoto = (arg: { modal: Element; after: boolean }) => {
-  const { modal, after } = arg;
+const moveToAdjacentPhoto = ({
+  event,
+  modal,
+  after,
+  skip,
+}: {
+  event: KeyboardEvent;
+  modal: Element;
+  after: boolean;
+  skip: boolean;
+}) => {
+  if (!skip) {
+    if (document.querySelector(after ? navRightSelector : navLeftSelector))
+      return;
+  }
+  event.stopImmediatePropagation();
   const timeline = Array.from(modal.querySelectorAll(timelineSelector));
   const index = timeline.findIndex((line) => {
     return line.querySelector(tweetButtonSelector);
@@ -40,7 +54,8 @@ const moveToNextPhoto = (arg: { modal: Element; after: boolean }) => {
       .some((line) => {
         const photos = line.querySelectorAll<HTMLDivElement>(photoSelector);
         if (photos.length > 0) {
-          photos[photos.length - 1].click();
+          const target = skip ? photos[0] : photos[photos.length - 1];
+          target.click();
           return true;
         }
         return false;
@@ -53,32 +68,15 @@ const onKeydown = (event: KeyboardEvent) => {
   const modal = document.querySelector(modalSelector);
   if (!modal) return;
 
-  switch (event.key) {
-    case "ArrowLeft": {
-      if (!document.querySelector(navLeftSelector)) {
-        event.preventDefault();
-        event.stopPropagation();
-        event.stopImmediatePropagation();
-        moveToNextPhoto({
-          modal,
-          after: false,
-        });
-      }
-      return;
-    }
-    case "ArrowRight": {
-      if (!document.querySelector(navRightSelector)) {
-        event.preventDefault();
-        event.stopPropagation();
-        event.stopImmediatePropagation();
-        moveToNextPhoto({
-          modal,
-          after: true,
-        });
-      }
-      return;
-    }
-  }
+  const dir = event.key.match(/^Arrow(?<dir>Up|Down|Left|Right)$/)?.groups?.dir;
+  if (!dir) return;
+
+  moveToAdjacentPhoto({
+    event,
+    modal,
+    after: /Right|Down/.test(dir),
+    skip: /Up|Down/.test(dir),
+  });
 };
 
 document.addEventListener("keydown", onKeydown);
