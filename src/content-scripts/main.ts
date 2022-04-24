@@ -9,7 +9,7 @@ const navRightSelector = "[data-testid=Carousel-NavRight]";
 // photo
 const photoSelector = "[data-testid=tweetPhoto]";
 // tweetButton
-const tweetButtonSelector = "[data-testid=tweetButton]";
+// const tweetButtonSelector = "[data-testid=tweetButton]";
 //
 const photoPageRegex = new RegExp("^/[^/]+/status/\\d+/photo");
 
@@ -30,16 +30,21 @@ const moveToAdjacentPhoto = ({
   }
   event.stopImmediatePropagation();
   const timeline = Array.from(modal.querySelectorAll(timelineSelector));
-  const index = timeline.findIndex((line) => {
-    return line.querySelector(tweetButtonSelector);
+  const currentArticleIndex = timeline.findIndex((line) => {
+    const article = line.querySelector("article");
+    if (!article) return false;
+
+    // No tabindex for current article only
+    return !article.hasAttribute("tabindex");
   });
-  if (index < 0) {
+  if (currentArticleIndex < 0) {
     // something error
+    console.error("cant find current article index.");
     return;
   }
 
   if (after) {
-    timeline.slice(index + 1).some((line) => {
+    timeline.slice(currentArticleIndex + 1).some((line) => {
       const photos = line.querySelectorAll<HTMLDivElement>(photoSelector);
       if (photos.length > 0) {
         photos[0].click();
@@ -49,7 +54,7 @@ const moveToAdjacentPhoto = ({
     });
   } else {
     timeline
-      .slice(0, index)
+      .slice(0, currentArticleIndex)
       .reverse()
       .some((line) => {
         const photos = line.querySelectorAll<HTMLDivElement>(photoSelector);
