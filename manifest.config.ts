@@ -6,9 +6,9 @@ export default defineManifest(() => {
     version: "1.0",
     manifest_version: 3,
     icons: {
-      "16": "assets/icon.png",
-      "48": "assets/icon.png",
-      "128": "assets/icon.png",
+      "16": "images/icon.png",
+      "48": "images/icon.png",
+      "128": "images/icon.png",
     },
     content_scripts: [
       {
