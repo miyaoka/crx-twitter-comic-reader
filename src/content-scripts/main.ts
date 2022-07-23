@@ -34,12 +34,12 @@ const moveToAdjacentPhoto = ({
     const article = line.querySelector("article");
     if (!article) return false;
 
-    // No tabindex for current article only
-    return !article.hasAttribute("tabindex");
+    // Only the current article has no keyboard focus.
+    return article.tabIndex === -1;
   });
   if (currentArticleIndex < 0) {
     // something error
-    console.error("cant find current article index.");
+    console.log("cant find current article index.");
     return;
   }
 
