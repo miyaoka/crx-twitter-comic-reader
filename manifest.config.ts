@@ -1,14 +1,17 @@
 import { defineManifest } from "@crxjs/vite-plugin";
+import { version } from "./package.json";
 
 export default defineManifest(() => {
   return {
-    name: "twitter comic reader",
-    version: "1.0",
     manifest_version: 3,
+    version,
+    default_locale: "en",
+    name: "__MSG_extName__",
+    description: "__MSG_extDescription__",
     icons: {
-      "16": "images/icon.png",
-      "48": "images/icon.png",
-      "128": "images/icon.png",
+      "16": "icons/icon.png",
+      "48": "icons/icon.png",
+      "128": "icons/icon.png",
     },
     content_scripts: [
       {
